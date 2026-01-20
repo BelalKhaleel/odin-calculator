@@ -10,20 +10,31 @@ const buttons = document.querySelector(".buttons");
 const operands = buttons.querySelectorAll(".operand");
 const decimalPoint = buttons.querySelector(".decimal-point");
 
-function operate(previousNumber, nextNumber, operator) {
-  switch (operator) {
-    case "+":
-      return previousNumber + nextNumber;
-    case "-":
-      return previousNumber - nextNumber;
-    case "×":
-      return previousNumber * nextNumber;
-    case "÷":
-      if (nextNumber) {
-        return previousNumber / nextNumber;
-      }
-    case "%":
-      return previousNumber % nextNumber;
+const calculator = {
+  add(a, b) {
+    return a + b;
+  },
+  subtract(a, b) {
+    return a - b;
+  },
+  multiply(a, b) {
+    return a * b;
+  },
+  divide(a, b) {
+    if (b == 0) return;
+    return a / b;
+  },
+  operate(a, b, operator) {
+    switch(operator) {
+      case "+":
+        return this.add(a, b);
+      case "-":
+        return this.subtract(a, b);
+      case "×":
+        return this.multiply(a, b);
+      case "÷":
+        return this.divide(a, b);
+    }
   }
 }
 
@@ -77,7 +88,7 @@ buttons.addEventListener("click", e => {
           Looks like someone wasn't paying attention during Math class 😛`;
           resetScreen();
         } else {
-          currentNumber = operate(previousNumber, nextNumber, operator);
+          currentNumber = calculator.operate(previousNumber, nextNumber, operator);
           if (currentNumber === undefined) {
             errorMessage.textContent = 'Please pay attention to your logic.';
             resetScreen();
