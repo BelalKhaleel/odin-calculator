@@ -4,6 +4,7 @@ let operator = "";
 let currentNumber = "";
 let errorMessage = document.querySelector(".error-message");
 
+const MAX_NUMBER_OF_DIGITS = 10;
 const screen = document.querySelector(".screen");
 const buttons = document.querySelector(".buttons");
 const operands = buttons.querySelectorAll(".operand");
@@ -28,7 +29,7 @@ function operate(previousNumber, nextNumber, operator) {
 
 function changeButtonsStatus(action) {
   if (action === 'disable') {
-    if (currentNumber.length > 13) {
+    if (currentNumber.length > MAX_NUMBER_OF_DIGITS) {
       operands.forEach((operand) => {
         operand.disabled = true;
       });
@@ -80,7 +81,7 @@ buttons.addEventListener("click", e => {
           if (currentNumber === undefined) {
             errorMessage.textContent = 'Please pay attention to your logic.';
             resetScreen();
-          } else if (String(currentNumber).length > 13) {
+          } else if (String(currentNumber).length > MAX_NUMBER_OF_DIGITS) {
             screen.textContent = currentNumber;
             screen.style.fontSize = '1.9rem';
             errorMessage.textContent = '';
