@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -8,47 +8,99 @@
     <script src="script.js" defer></script>
   </head>
   <body>
-    <div class="instructions">
-      <span style="text-decoration: underline;">Notes:</span>
-      <span>* You can only perform one operation at a time, not more.</span>
-      <span>In other words, you should not evaluate more than a single pair of numbers at a time.</span>
-      <span>* Input number must not exceed 14 digits.</span>
-      <span class="error-message"></span>
-    </div>
-    <div class="container">
-      <div class="screen" max="14"></div>
-      <div class="buttons">
-        <button type="button" class="clear">AC</button>
-        <button type="button" class="backspace">←</button>
-        <button type="button" class="operator" id="modulo" value="%">
-          %
-        </button>
-        <button type="button" class="operator" id="division" value="÷">
-          ÷
-        </button>
-        <button type="button" class="operand" id="seven" value="7">7</button>
-        <button type="button" class="operand" id="eight" value="8">8</button>
-        <button type="button" class="operand" id="nine" value="9">9</button>
-        <button type="button" class="operator" id="multiplication" value="×">
-          ×
-        </button>
-        <button type="button" class="operand" id="four" value="4">4</button>
-        <button type="button" class="operand" id="five" value="5">5</button>
-        <button type="button" class="operand" id="six" value="6">6</button>
-        <button type="button" class="operator" id="subtraction" value="-">
-          -
-        </button>
-        <button type="button" class="operand" id="one" value="1">1</button>
-        <button type="button" class="operand" id="two" value="2">2</button>
-        <button type="button" class="operand" id="three" value="3">3</button>
-        <button type="button" class="operator" id="addition" value="+">
-          +
-        </button>
-        <button type="button" class="operand" id="zero" value="0">0</button>
-        <button type="button" class="decimal-point" id="decimal-point" value=".">
-          .
-        </button>
-        <button type="button" class="equal" id="equal">=</button>
+    <div class="content">
+      <div class="instructions">
+        <span class="notes">Notes:</span>
+        <span>* You can only perform one operation at a time, not more.</span>
+        <span
+          >In other words, you should not evaluate more than a single pair of
+          numbers at a time.</span
+        >
+        <span>* Input number must not exceed 11 digits.</span>
+        <span class="error-message"></span>
+      </div>
+      <div class="container">
+        <div class="screen" max="14"></div>
+        <div class="buttons">
+          <div class="left-side">
+            <div>
+              <button type="button" class="clear">AC</button>
+              <button type="button" class="backspace">←</button>
+            </div>
+            <div class="operands">
+              <div class="first-row">
+                <button type="button" class="operand" id="seven" value="7">
+                  7
+                </button>
+                <button type="button" class="operand" id="eight" value="8">
+                  8
+                </button>
+                <button type="button" class="operand" id="nine" value="9">
+                  9
+                </button>
+              </div>
+              <div class="second-row">
+                <button type="button" class="operand" id="four" value="4">
+                  4
+                </button>
+                <button type="button" class="operand" id="five" value="5">
+                  5
+                </button>
+                <button type="button" class="operand" id="six" value="6">
+                  6
+                </button>
+              </div>
+              <div class="third-row">
+                <button type="button" class="operand" id="one" value="1">
+                  1
+                </button>
+                <button type="button" class="operand" id="two" value="2">
+                  2
+                </button>
+                <button type="button" class="operand" id="three" value="3">
+                  3
+                </button>
+              </div>
+              <div class="fourth-row">
+                <button type="button" class="operand" id="zero" value="0">
+                  0
+                </button>
+                <button
+                  type="button"
+                  class="decimal-point"
+                  id="decimal-point"
+                  value="."
+                >
+                  .
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="right-side">
+            <div class="operators">
+              <button type="button" class="operator" id="division" value="÷">
+                ÷
+              </button>
+              <button
+                type="button"
+                class="operator"
+                id="multiplication"
+                value="×"
+              >
+                ×
+              </button>
+              <button type="button" class="operator" id="subtraction" value="-">
+                -
+              </button>
+              <button type="button" class="operator" id="addition" value="+">
+                +
+              </button>
+              <button type="button" class="operator" id="equal">
+                =
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>

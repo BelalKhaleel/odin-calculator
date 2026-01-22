@@ -9,19 +9,23 @@
   src: url(./assets/fonts/digital-7/digital-7.ttf);
 }
 
-body {
-  min-height: 100vh;
+.content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0;
+  padding-top: 100px;
 }
 
-.instructions span {
-  display: block;
+.notes {
+  text-decoration: underline;
+}
+
+.instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 10px;
-  margin-left: 8em;
 }
 
 .instructions .error-message {
@@ -33,15 +37,16 @@ body {
   background-color: aliceblue;
   border: solid 1px darkgray;
   border-radius: 5px;
-  padding: 2em 3.5em;
+  padding: 2.5em 3.5em;
   display: flex;
   flex-direction: column;
   gap: 2em;
+  width: 500px;
 }
 
 .screen {
   font-family: Digital-7;
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   word-wrap: break-word;
   white-space: pre-wrap;
   word-break: break-word;
@@ -50,29 +55,40 @@ body {
   border: solid 1px darkgray;
   border-radius: 5px;
   display: flex;
-  flex-direction: column;
   justify-content: flex-end;
-  align-items: flex-end;
-  padding: .8em;
+  align-items: center;
+  height: 80px;
+  padding: 20px;
 }
 
-.previous-number {
+/* .previous-number {
   font-size: 1.2em;
   color: lightslategray;
-}
+} */
 
-.current-number {
+/* .current-number {
   font-size: 2em;
-}
+} */
 
 .buttons {
-  padding: 5px;
-  background-color: white;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  column-gap: 5px;
-  row-gap: 5px;
+  display: flex;
+  gap: 5px;
+  font-size: 2.1rem;
+}
+
+.left-side,
+.right-side,
+.operands,
+.operators {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.left-side > div,
+.fourth-row {
+  display: flex;
+  gap: 5px;
 }
 
 button {
@@ -81,38 +97,15 @@ button {
   padding: 0.5em 1em;
 }
 
-#zero {
-  grid-column: 1 / span 2;
-}
-
-.decimal-point {
-  font-size: 1.4em;
-}
-
-#division,
-#minus {
-  font-size: 1.5em;
-}
-
 .operator {
   background-color: orange;
   border: solid 1px;
-  font-size: 1.3em;
-  border-radius: 3px;
 }
 
-.operator:hover, .operator:focus {
+.operator:hover,
+.operator:focus {
   background-color: darkorange;
   color: white;
-}
-
-.operator.clicked {
-  background-color: darkorange;
-  color: white;
-}
-
-.backspace {
-  font-size: 1.2em;
 }
 
 .clear,
@@ -120,7 +113,23 @@ button {
   color: white;
   background-color: dimgray;
   border: none;
+}
+
+.clear,
+.backspace,
+.decimal-point {
+  flex-grow: 1;
+}
+
+.operator,
+.clear,
+.backspace {
   border-radius: 3px;
+}
+
+/* to align operator buttons with operands */
+#subtraction {
+  font-size: 2.2rem;
 }
 
 .clear:hover,
