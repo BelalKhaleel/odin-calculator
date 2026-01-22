@@ -40,20 +40,6 @@ const calculator = {
   },
 };
 
-function disableButtons() {
-  operands.forEach((operand) => {
-    operand.disabled = true;
-  });
-  decimalPoint.disabled = true;
-}
-
-function enableButtons() {
-  operands.forEach((operand) => {
-    operand.disabled = false;
-  });
-  decimalPoint.disabled = false;
-}
-
 function resetScreen() {
   screen.textContent = "";
 }
@@ -80,13 +66,14 @@ buttons.addEventListener("click", (e) => {
     buttonClass.contains("decimal-point")
   ) {
     if (state.currentNumber.length + 1 >= MAX_NUMBER_OF_DIGITS) return;
-    if (state.currentNumber.includes(".")) decimalPoint.disabled = true;
     // if a result is displayed and the user clicks another button, the calculations should reset
     if (state.currentNumber === "" && state.operator === "")
       state.previousNumber = "";
     screen.textContent = getCurrentValue(e);
+    if (state.currentNumber.includes(".")) decimalPoint.disabled = true;
   }
   if (buttonClass.contains("operator")) {
+    decimalPoint.disabled = false;
     // if no current number or previous number is present, don't operate
     if (!state.currentNumber && !state.previousNumber) return;
     // if both and the operator are present, get and display the result
@@ -106,6 +93,7 @@ buttons.addEventListener("click", (e) => {
       );
       // check if result is a decimal
       if (result % 1 != 0) result = parseFloat(result.toFixed(8));
+      // use scientific notation to handle large numbers
       if (String(result).length > MAX_NUMBER_OF_DIGITS) result = result.toExponential(2);
       screen.textContent = result;
       state.previousNumber = result;
@@ -119,7 +107,6 @@ buttons.addEventListener("click", (e) => {
       state.currentNumber = "";
     }
     console.log(state);
-    // enableButtons();
   }
   if (buttonClass.contains("clear")) {
     resetScreen();
