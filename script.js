@@ -34,7 +34,11 @@ const calculator = {
         return this.subtract(a, b);
       case "×":
         return this.multiply(a, b);
+      case "*":
+        return this.multiply(a, b);
       case "÷":
+        return this.divide(a, b);
+      case "/":
         return this.divide(a, b);
     }
   },
@@ -44,33 +48,85 @@ function resetScreen() {
   screen.textContent = "";
 }
 
+function resetErrorMsg() {
+  errorMessage.textContent = "";
+}
+
+function resetState() {
+  state.operator = "",
+  state.previousNumber = "";
+  state.currentNumber = "";
+  state.numberOfTimesOperatorClickedSuccessively = 0;
+}
+
+function getValueType(e) {
+  let value = "";
+  if (e instanceof MouseEvent) {
+    value = e.target.value;
+  } else if (e instanceof KeyboardEvent) {
+    value = e.key;
+  }
+  return value;
+}
+
 function getCurrentValue(e) {
-  state.currentNumber += e.target.value;
+
+  state.currentNumber += getValueType(e);
   return state.currentNumber;
 }
 
 function getOperator(e) {
   if (state.previousNumber === "" && state.currentNumber === "") return;
-  state.operator = e.target.value;
+  state.operator = getValueType(e)
   return state.operator;
+}
+
+function getResult(operand1, operand2, operator) {
+  operand1 = Number(operand1);
+  operand2 = Number(operand2);
+  handleDividingByZero(operand2, operator);
+  return calculator.operate(
+    operand2,
+    operand1,
+    operator,
+  );
+}
+
+function handleDividingByZero(denominator, operator) {
+  if ((operator === "÷" || operator === "/") && denominator === 0) {
+    errorMessage.textContent = `Oops! Can't divide by zero dummy!
+    Looks like someone wasn't paying attention during Math class 😛`;
+    resetScreen();
+    resetState();
+    return;
+  }
+}
+
+function displayNumberOnScreen(e) {
+  if (state.currentNumber.length + 1 >= MAX_NUMBER_OF_DIGITS) return;
+  // if a result is displayed and the user clicks another button, the calculations should reset
+  if (state.currentNumber === "" && state.operator === "") state.previousNumber = "";
+  screen.textContent = getCurrentValue(e);
+  if (state.currentNumber.includes(".")) decimalPoint.disabled = true;
+}
+
+function displayResult(result) {
+  // check if result is a decimal
+  if (result % 1 != 0) result = parseFloat(result.toFixed(8));
+  // use scientific notation to handle large numbers
+  if (String(result).length > MAX_NUMBER_OF_DIGITS) result = result.toExponential(2);
 }
 
 buttons.addEventListener("click", (e) => {
   const buttonClass = e.target.classList;
-  if (!buttonClass.contains("operator"))
-    state.numberOfTimesOperatorClickedSuccessively = 0;
-  errorMessage.textContent = "";
+  if (!buttonClass.contains("operator")) state.numberOfTimesOperatorClickedSuccessively = 0;
+  resetErrorMsg();
 
   if (
     buttonClass.contains("operand") ||
     buttonClass.contains("decimal-point")
   ) {
-    if (state.currentNumber.length + 1 >= MAX_NUMBER_OF_DIGITS) return;
-    // if a result is displayed and the user clicks another button, the calculations should reset
-    if (state.currentNumber === "" && state.operator === "")
-      state.previousNumber = "";
-    screen.textContent = getCurrentValue(e);
-    if (state.currentNumber.includes(".")) decimalPoint.disabled = true;
+    displayNumberOnScreen(e);
   }
   if (buttonClass.contains("operator")) {
     decimalPoint.disabled = false;
@@ -78,23 +134,8 @@ buttons.addEventListener("click", (e) => {
     if (!state.currentNumber && !state.previousNumber) return;
     // if both and the operator are present, get and display the result
     if (state.currentNumber && state.previousNumber) {
-      state.currentNumber = Number(state.currentNumber);
-      state.previousNumber = Number(state.previousNumber);
-      if (state.operator === "÷" && state.currentNumber === 0) {
-        errorMessage.textContent = `Oops! Can't divide by zero dummy!
-            Looks like someone wasn't paying attention during Math class 😛`;
-        resetScreen();
-        return;
-      }
-      let result = calculator.operate(
-        state.previousNumber,
-        state.currentNumber,
-        state.operator,
-      );
-      // check if result is a decimal
-      if (result % 1 != 0) result = parseFloat(result.toFixed(8));
-      // use scientific notation to handle large numbers
-      if (String(result).length > MAX_NUMBER_OF_DIGITS) result = result.toExponential(2);
+      let result = getResult(state.previousNumber, state.currentNumber, state.operator);
+      displayResult(result);
       screen.textContent = result;
       state.previousNumber = result;
       state.currentNumber = "";
@@ -106,16 +147,30 @@ buttons.addEventListener("click", (e) => {
       state.previousNumber = state.currentNumber;
       state.currentNumber = "";
     }
-    console.log(state);
   }
   if (buttonClass.contains("clear")) {
     resetScreen();
-    enableButtons();
-    state.previousNumber = "";
-    state.currentNumber = "";
+    resetState();
   }
   if (buttonClass.contains("backspace")) {
     state.currentNumber = state.currentNumber.split("").slice(0, -1).join("");
     screen.textContent = state.currentNumber;
   }
 });
+
+document.addEventListener("keydown", (e) => {
+  const keyPressed = e.key;
+  const operators = ["+", "-", "*", "/", "="]
+  const allowedKeys = [...operators, ".", "Backspace", "Enter"];
+  if (isNaN(keyPressed) && !allowedKeys.includes(keyPressed)) return;
+
+  console.log(keyPressed)
+  resetErrorMsg();
+  if (!operators.includes(keyPressed)) state.numberOfTimesOperatorClickedSuccessively = 0;
+  if (
+    !isNaN(keyPressed)
+    || keyPressed === "."
+  ) {
+    displayNumberOnScreen(e);
+  }
+})
