@@ -106,6 +106,7 @@ buttons.addEventListener("click", (e) => {
       );
       // check if result is a decimal
       if (result % 1 != 0) result = parseFloat(result.toFixed(8));
+      if (String(result).length > MAX_NUMBER_OF_DIGITS) result = result.toExponential(2);
       screen.textContent = result;
       state.previousNumber = result;
       state.currentNumber = "";
