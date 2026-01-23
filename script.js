@@ -86,8 +86,8 @@ function getResult(operand1, operand2, operator) {
   operand2 = Number(operand2);
   handleDividingByZero(operand2, operator);
   return calculator.operate(
-    operand2,
     operand1,
+    operand2,
     operator,
   );
 }
