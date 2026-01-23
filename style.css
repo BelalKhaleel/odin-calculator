@@ -34,7 +34,7 @@
 }
 
 .container {
-  background-color: aliceblue;
+  background-color: #babec4;
   border: solid 1px darkgray;
   border-radius: 5px;
   padding: 2.5em 3.5em;
@@ -47,9 +47,6 @@
 .screen {
   font-family: Digital-7;
   font-size: 3.5rem;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  word-break: break-word;
   letter-spacing: 3px;
   background-color: white;
   border: solid 1px darkgray;
@@ -60,15 +57,6 @@
   height: 80px;
   padding: 20px;
 }
-
-/* .previous-number {
-  font-size: 1.2em;
-  color: lightslategray;
-} */
-
-/* .current-number {
-  font-size: 2em;
-} */
 
 .buttons {
   display: flex;
@@ -103,7 +91,7 @@ button {
 }
 
 .operator:hover,
-.operator:focus {
+.operator-active {
   background-color: darkorange;
   color: white;
 }

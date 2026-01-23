@@ -9,6 +9,7 @@ const MAX_NUMBER_OF_DIGITS = 12;
 const screen = document.querySelector(".screen");
 const buttons = document.querySelector(".buttons");
 const operands = buttons.querySelectorAll(".operand");
+const operators = buttons.querySelectorAll(".operator");
 const decimalPoint = buttons.querySelector(".decimal-point");
 let errorMessage = document.querySelector(".error-message");
 
@@ -32,7 +33,7 @@ const calculator = {
         return this.add(a, b);
       case "-":
         return this.subtract(a, b);
-      case "×":
+      case "x":
         return this.multiply(a, b);
       case "*":
         return this.multiply(a, b);
@@ -86,16 +87,6 @@ function getResult(operand1, operand2, operator) {
   return calculator.operate(operand1, operand2, operator);
 }
 
-function handleDividingByZero(denominator, operator) {
-  if ((operator === "÷" || operator === "/") && denominator === 0) {
-    errorMessage.textContent = `Oops! Can't divide by zero dummy!
-    Looks like someone wasn't paying attention during Math class 😛`;
-    resetScreen();
-    resetState();
-    return;
-  }
-}
-
 function displayNumberOnScreen(e) {
   if (state.currentNumber.length + 1 >= MAX_NUMBER_OF_DIGITS) return;
   // if a result is displayed and the user clicks another button, the calculations should reset
@@ -114,12 +105,53 @@ function displayResult(result) {
   screen.textContent = result;
 }
 
+function addOperatorActiveClass(e) {
+  let operator = e.target;
+  if (operator === document.querySelector("body")) {
+    const keyPressed = e.key;
+    switch (keyPressed) {
+      case "+":
+        operator = buttons.querySelector("#addition");
+        break;
+      case "-":
+        operator = buttons.querySelector("#subtraction");
+        break;
+      case "*":
+        operator = buttons.querySelector("#multiplication");
+        break;
+      case "/":
+        operator = buttons.querySelector("#division");
+        break;
+      case "=":
+        operator = buttons.querySelector("#equal");
+        break;
+    }
+  }
+  operator.classList.add("operator-active");
+}
+
+function removeOperatorActiveClass() {
+  operators.forEach(operator => operator.classList.remove("operator-active"));
+}
+
+function handleDividingByZero(denominator, operator) {
+  if ((operator === "÷" || operator === "/") && denominator === 0) {
+    errorMessage.textContent = `Oops! Can't divide by zero dummy!
+    Looks like someone wasn't paying attention during Math class 😛`;
+    resetScreen();
+    resetState();
+    return;
+  }
+}
+
 function handleBackspaceClick() {
   state.currentNumber = state.currentNumber.split("").slice(0, -1).join("");
   screen.textContent = state.currentNumber;
 }
 
 function handleOperatorClick(e) {
+  removeOperatorActiveClass();
+  addOperatorActiveClass(e);
   decimalPoint.disabled = false;
   // if no current number or previous number is present, don't operate
   if (!state.currentNumber && !state.previousNumber) return;
@@ -147,7 +179,7 @@ buttons.addEventListener("click", (e) => {
   const buttonClass = e.target.classList;
   if (!buttonClass.contains("operator"))
     state.numberOfTimesOperatorClickedSuccessively = 0;
-  resetErrorMsg();
+  if (errorMessage) resetErrorMsg();
 
   if (
     buttonClass.contains("operand") ||
@@ -161,6 +193,7 @@ buttons.addEventListener("click", (e) => {
   if (buttonClass.contains("clear")) {
     resetScreen();
     resetState();
+    removeOperatorActiveClass();
   }
 
   if (buttonClass.contains("backspace")) handleBackspaceClick();
@@ -169,11 +202,9 @@ buttons.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   const keyPressed = e.key;
   const operators = ["+", "-", "*", "/", "="];
-  const allowedKeys = [...operators, ".", "Backspace", "Enter"];
+  const allowedKeys = [...operators, ".", "Backspace", "Delete", "Enter"];
   if (isNaN(keyPressed) && !allowedKeys.includes(keyPressed)) return;
-
-  console.log(keyPressed);
-  resetErrorMsg();
+  if (errorMessage) resetErrorMsg();
   if (!operators.includes(keyPressed))
     state.numberOfTimesOperatorClickedSuccessively = 0;
   if (!isNaN(keyPressed) || keyPressed === ".") {
@@ -183,4 +214,9 @@ document.addEventListener("keydown", (e) => {
   if (operators.includes(keyPressed)) handleOperatorClick(e);
 
   if (keyPressed === "Backspace") handleBackspaceClick();
+  if (keyPressed === "Delete") {
+    resetScreen();
+    resetState();
+    removeOperatorActiveClass();
+  };
 });
