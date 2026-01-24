@@ -10,7 +10,7 @@ const buttons = document.querySelector(".buttons");
 const operands = buttons.querySelectorAll(".operand");
 const operators = buttons.querySelectorAll(".operator");
 const decimalPoint = buttons.querySelector(".decimal-point");
-let errorMessage = document.querySelector(".error-message");
+const errorMessage = document.querySelector(".error-message");
 
 const calculator = {
   add(a, b) {
@@ -121,20 +121,7 @@ function addOperatorActiveClass(e) {
   let operator = e.target;
   if (operator === document.querySelector("body")) {
     const keyPressed = e.key;
-    switch (keyPressed) {
-      case "+":
-        operator = buttons.querySelector("#addition");
-        break;
-      case "-":
-        operator = buttons.querySelector("#subtraction");
-        break;
-      case "*":
-        operator = buttons.querySelector("#multiplication");
-        break;
-      case "/":
-        operator = buttons.querySelector("#division");
-        break;
-    }
+    operator = document.querySelector(`[data-key="${keyPressed}"]`);
   }
   operator.classList.add("operator-active");
 }
