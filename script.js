@@ -25,8 +25,7 @@ const calculator = {
     return a * b;
   },
   divide(a, b) {
-    if (b !== 0)
-      return a / b;
+    if (b !== 0) return a / b;
   },
   operate(a, b, operator) {
     switch (operator) {
@@ -58,7 +57,7 @@ function resetState() {
   state.currentNumber = "0";
 }
 
-function getValueType(e) {
+function getEventValue(e) {
   let value = "";
   if (e instanceof MouseEvent) {
     value = e.target.value;
@@ -69,15 +68,16 @@ function getValueType(e) {
 }
 
 function getCurrentValue(e) {
-  state.currentNumber += getValueType(e);
-  if (Number(state.currentNumber) === 0) state.currentNumber = "0";
-  if (state.currentNumber.length > 1) state.currentNumber = state.currentNumber.replace(/^0+/, "");
+  const value = getEventValue(e);
+  if (state.currentNumber ===  "0" && value === "0") return;
+  state.currentNumber += getEventValue(e);
+  if (!state.currentNumber.includes(".")) return state.currentNumber.replace(/^0+/, "");
   return state.currentNumber;
 }
 
 function getOperator(e) {
   if (state.previousNumber === "" && state.currentNumber === "0") return;
-  state.operator = getValueType(e);
+  state.operator = getEventValue(e);
   return state.operator;
 }
 
@@ -92,7 +92,7 @@ function getAndDisplayResult() {
   removeOperatorActiveClass();
   // if no current number or previous number is present, don't operate
   if (!state.currentNumber || !state.previousNumber || !state.operator) return;
-    // if both and the operator are present, get and display the result
+  // if both and the operator are present, get and display the result
   const result = getResult(
     state.previousNumber,
     state.currentNumber,
@@ -109,8 +109,9 @@ function displayNumberOnScreen(e) {
   // if a result is displayed and the user clicks another button, the calculations should reset
   if (state.currentNumber === "0" && state.operator === "")
     state.previousNumber = "";
-  if (state.currentNumber.includes(".")) return;
-  screen.textContent = getCurrentValue(e);
+  const key = getEventValue(e);
+  if (state.currentNumber.includes(".") && key === ".") return;
+  screen.textContent = getCurrentValue(e) ?? "0";
 }
 
 function displayResult(result) {
@@ -132,11 +133,11 @@ function addOperatorActiveClass(e) {
 }
 
 function removeOperatorActiveClass() {
-  operators.forEach(operator => operator.classList.remove("operator-active"));
+  operators.forEach((operator) => operator.classList.remove("operator-active"));
 }
 
 function handleDividingByZero(denominator, operator) {
-  if ((operator === "/") && denominator === 0) {
+  if (operator === "/" && denominator === 0) {
     errorMessage.textContent = `Oops! Can't divide by zero!
     Looks like someone wasn't paying attention during Math class 😛`;
     resetScreen();
@@ -202,5 +203,5 @@ document.addEventListener("keydown", (e) => {
     resetScreen();
     resetState();
     removeOperatorActiveClass();
-  };
+  }
 });
