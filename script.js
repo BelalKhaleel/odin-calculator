@@ -2,7 +2,6 @@ const state = {
   previousNumber: "",
   currentNumber: "",
   operator: "",
-  numberOfTimesOperatorClickedSuccessively: 0,
 };
 
 const MAX_NUMBER_OF_DIGITS = 12;
@@ -24,8 +23,8 @@ const calculator = {
     return a * b;
   },
   divide(a, b) {
-    if (b == 0) return;
-    return a / b;
+    if (b !== 0)
+      return a / b;
   },
   operate(a, b, operator) {
     switch (operator) {
@@ -33,12 +32,8 @@ const calculator = {
         return this.add(a, b);
       case "-":
         return this.subtract(a, b);
-      case "x":
-        return this.multiply(a, b);
       case "*":
         return this.multiply(a, b);
-      case "÷":
-        return this.divide(a, b);
       case "/":
         return this.divide(a, b);
     }
@@ -54,9 +49,9 @@ function resetErrorMsg() {
 }
 
 function resetState() {
-  ((state.operator = ""), (state.previousNumber = ""));
+  state.operator = "";
+  state.previousNumber = "";
   state.currentNumber = "";
-  state.numberOfTimesOperatorClickedSuccessively = 0;
 }
 
 function getValueType(e) {
@@ -115,7 +110,7 @@ function displayNumberOnScreen(e) {
 
 function displayResult(result) {
   // check if result is a decimal
-  if (result % 1 != 0) result = parseFloat(result.toFixed(8));
+  if (result % 1 !== 0) result = parseFloat(result.toFixed(8));
   // use scientific notation to handle large numbers
   if (String(result).length > MAX_NUMBER_OF_DIGITS)
     result = result.toExponential(2);
@@ -139,9 +134,6 @@ function addOperatorActiveClass(e) {
       case "/":
         operator = buttons.querySelector("#division");
         break;
-      case "=":
-        operator = buttons.querySelector("#equal");
-        break;
     }
   }
   operator.classList.add("operator-active");
@@ -152,8 +144,8 @@ function removeOperatorActiveClass() {
 }
 
 function handleDividingByZero(denominator, operator) {
-  if ((operator === "÷" || operator === "/") && denominator === 0) {
-    errorMessage.textContent = `Oops! Can't divide by zero dummy!
+  if ((operator === "/") && denominator === 0) {
+    errorMessage.textContent = `Oops! Can't divide by zero!
     Looks like someone wasn't paying attention during Math class 😛`;
     resetScreen();
     resetState();
@@ -179,8 +171,6 @@ function handleOperatorClick(e) {
 
 buttons.addEventListener("click", (e) => {
   const buttonClass = e.target.classList;
-  if (!buttonClass.contains("operator"))
-    state.numberOfTimesOperatorClickedSuccessively = 0;
   if (errorMessage.textContent) resetErrorMsg();
 
   if (
@@ -205,18 +195,16 @@ buttons.addEventListener("click", (e) => {
 
 document.addEventListener("keydown", (e) => {
   const keyPressed = e.key;
-  const operators = ["+", "-", "*", "/", "="];
-  const allowedKeys = [...operators, ".", "Backspace", "Delete", "Enter"];
+  const operators = ["+", "-", "*", "/"];
+  const allowedKeys = [...operators, ".", "=", "Backspace", "Delete", "Enter"];
   if (isNaN(keyPressed) && !allowedKeys.includes(keyPressed)) return;
   if (errorMessage.textContent) resetErrorMsg();
-  if (!operators.includes(keyPressed))
-    state.numberOfTimesOperatorClickedSuccessively = 0;
   if (!isNaN(keyPressed) || keyPressed === ".") {
     displayNumberOnScreen(e);
   }
 
   if (operators.includes(keyPressed)) handleOperatorClick(e);
-
+  if (keyPressed === "=") getAndDisplayResult();
   if (keyPressed === "Backspace") handleBackspaceClick();
   if (keyPressed === "Delete") {
     resetScreen();
