@@ -12,7 +12,6 @@ const screen = document.querySelector(".screen");
 const buttons = document.querySelector(".buttons");
 const operands = buttons.querySelectorAll(".operand");
 const operators = buttons.querySelectorAll(".operator");
-const decimalPoint = buttons.querySelector(".decimal-point");
 const errorMessage = document.querySelector(".error-message");
 
 const calculator = {
@@ -87,7 +86,6 @@ function getResult(operand1, operand2, operator) {
 
 function getAndDisplayResult() {
   removeOperatorActiveClass();
-  decimalPoint.disabled = false;
   // if no current number or previous number is present, don't operate
   if (!state.currentNumber || !state.previousNumber || !state.operator) return;
     // if both and the operator are present, get and display the result
@@ -107,8 +105,8 @@ function displayNumberOnScreen(e) {
   // if a result is displayed and the user clicks another button, the calculations should reset
   if (state.currentNumber === "" && state.operator === "")
     state.previousNumber = "";
+  if (state.currentNumber.includes(".")) return;
   screen.textContent = getCurrentValue(e);
-  if (state.currentNumber.includes(".")) decimalPoint.disabled = true;
 }
 
 function displayResult(result) {
