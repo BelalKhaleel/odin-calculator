@@ -87,7 +87,24 @@ function getResult(operand1, operand2, operator) {
   return calculator.operate(operand1, operand2, operator);
 }
 
+function getAndDisplayResult() {
+  removeOperatorActiveClass();
+  decimalPoint.disabled = false;
+  // if no current number or previous number is present, don't operate
+  if (!state.currentNumber || !state.previousNumber || !state.operator) return;
+    // if both and the operator are present, get and display the result
+  const result = getResult(
+    state.previousNumber,
+    state.currentNumber,
+    state.operator,
+  );
+  displayResult(result);
+  state.previousNumber = result;
+  state.currentNumber = "";
+}
+
 function displayNumberOnScreen(e) {
+  if (!state.operator) removeOperatorActiveClass();
   if (state.currentNumber.length + 1 >= MAX_NUMBER_OF_DIGITS) return;
   // if a result is displayed and the user clicks another button, the calculations should reset
   if (state.currentNumber === "" && state.operator === "")
@@ -150,23 +167,8 @@ function handleBackspaceClick() {
 }
 
 function handleOperatorClick(e) {
-  removeOperatorActiveClass();
+  getAndDisplayResult();
   addOperatorActiveClass(e);
-  decimalPoint.disabled = false;
-  // if no current number or previous number is present, don't operate
-  if (!state.currentNumber && !state.previousNumber) return;
-  // if both and the operator are present, get and display the result
-  if (state.currentNumber && state.previousNumber && state.operator) {
-    let result = getResult(
-      state.previousNumber,
-      state.currentNumber,
-      state.operator,
-    );
-    displayResult(result);
-    state.previousNumber = result;
-    state.currentNumber = "";
-  }
-
   state.operator = getOperator(e);
   // if previous number is already present, set the current number variable to the current value
   if (state.currentNumber) {
@@ -179,7 +181,7 @@ buttons.addEventListener("click", (e) => {
   const buttonClass = e.target.classList;
   if (!buttonClass.contains("operator"))
     state.numberOfTimesOperatorClickedSuccessively = 0;
-  if (errorMessage) resetErrorMsg();
+  if (errorMessage.textContent) resetErrorMsg();
 
   if (
     buttonClass.contains("operand") ||
@@ -189,6 +191,8 @@ buttons.addEventListener("click", (e) => {
   }
 
   if (buttonClass.contains("operator")) handleOperatorClick(e);
+
+  if (buttonClass.contains("equal")) getAndDisplayResult();
 
   if (buttonClass.contains("clear")) {
     resetScreen();
@@ -204,7 +208,7 @@ document.addEventListener("keydown", (e) => {
   const operators = ["+", "-", "*", "/", "="];
   const allowedKeys = [...operators, ".", "Backspace", "Delete", "Enter"];
   if (isNaN(keyPressed) && !allowedKeys.includes(keyPressed)) return;
-  if (errorMessage) resetErrorMsg();
+  if (errorMessage.textContent) resetErrorMsg();
   if (!operators.includes(keyPressed))
     state.numberOfTimesOperatorClickedSuccessively = 0;
   if (!isNaN(keyPressed) || keyPressed === ".") {
