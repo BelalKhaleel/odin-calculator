@@ -25,7 +25,11 @@ const calculator = {
     return a * b;
   },
   divide(a, b) {
-    if (b !== 0) return a / b;
+    if (b === 0) {
+      handleDividingByZero();
+      return;
+    }
+    return a / b;
   },
   operate(a, b, operator) {
     switch (operator) {
@@ -69,9 +73,13 @@ function getEventValue(e) {
 
 function getCurrentValue(e) {
   const value = getEventValue(e);
-  if (state.currentNumber ===  "0" && value === "0") return;
-  state.currentNumber += getEventValue(e);
-  if (!state.currentNumber.includes(".")) return state.currentNumber.replace(/^0+/, "");
+  if (state.currentNumber === "0" && value === "0") {
+    state.currentNumber = value;
+  } else {
+    state.currentNumber += value;
+  }
+  if (!state.currentNumber.includes(".") && state.currentNumber.length > 1)
+    state.currentNumber = state.currentNumber.replace(/^0+/, "");
   return state.currentNumber;
 }
 
@@ -84,7 +92,6 @@ function getOperator(e) {
 function getResult(operand1, operand2, operator) {
   operand1 = Number(operand1);
   operand2 = Number(operand2);
-  handleDividingByZero(operand2, operator);
   return calculator.operate(operand1, operand2, operator);
 }
 
@@ -111,7 +118,7 @@ function displayNumberOnScreen(e) {
     state.previousNumber = "";
   const key = getEventValue(e);
   if (state.currentNumber.includes(".") && key === ".") return;
-  screen.textContent = getCurrentValue(e) ?? "0";
+  screen.textContent = getCurrentValue(e);
 }
 
 function displayResult(result) {
@@ -136,19 +143,20 @@ function removeOperatorActiveClass() {
   operators.forEach((operator) => operator.classList.remove("operator-active"));
 }
 
-function handleDividingByZero(denominator, operator) {
-  if (operator === "/" && denominator === 0) {
-    errorMessage.textContent = `Oops! Can't divide by zero!
-    Looks like someone wasn't paying attention during Math class 😛`;
-    resetScreen();
-    resetState();
-    return;
-  }
+function handleDividingByZero() {
+  errorMessage.textContent = `Oops! Can't divide by zero!
+  Looks like someone wasn't paying attention during Math class 😛`;
+  resetScreen();
+  resetState();
 }
 
 function handleBackspaceClick() {
   state.currentNumber = state.currentNumber.split("").slice(0, -1).join("");
   screen.textContent = state.currentNumber;
+  if (state.currentNumber.length === 0) {
+    resetState();
+    resetScreen();
+  }
 }
 
 function handleOperatorClick(e) {
