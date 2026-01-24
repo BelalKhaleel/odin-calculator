@@ -1,6 +1,6 @@
 const state = {
   previousNumber: "",
-  currentNumber: "",
+  currentNumber: "0",
   operator: "",
 };
 
@@ -42,8 +42,10 @@ const calculator = {
   },
 };
 
+screen.textContent = state.currentNumber;
+
 function resetScreen() {
-  screen.textContent = "";
+  screen.textContent = "0";
 }
 
 function resetErrorMsg() {
@@ -53,7 +55,7 @@ function resetErrorMsg() {
 function resetState() {
   state.operator = "";
   state.previousNumber = "";
-  state.currentNumber = "";
+  state.currentNumber = "0";
 }
 
 function getValueType(e) {
@@ -68,11 +70,13 @@ function getValueType(e) {
 
 function getCurrentValue(e) {
   state.currentNumber += getValueType(e);
+  if (Number(state.currentNumber) === 0) state.currentNumber = "0";
+  if (state.currentNumber.length > 1) state.currentNumber = state.currentNumber.replace(/^0+/, "");
   return state.currentNumber;
 }
 
 function getOperator(e) {
-  if (state.previousNumber === "" && state.currentNumber === "") return;
+  if (state.previousNumber === "" && state.currentNumber === "0") return;
   state.operator = getValueType(e);
   return state.operator;
 }
@@ -103,7 +107,7 @@ function displayNumberOnScreen(e) {
   if (!state.operator) removeOperatorActiveClass();
   if (state.currentNumber.length + 1 >= MAX_NUMBER_OF_DIGITS) return;
   // if a result is displayed and the user clicks another button, the calculations should reset
-  if (state.currentNumber === "" && state.operator === "")
+  if (state.currentNumber === "0" && state.operator === "")
     state.previousNumber = "";
   if (state.currentNumber.includes(".")) return;
   screen.textContent = getCurrentValue(e);
