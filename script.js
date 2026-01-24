@@ -5,6 +5,9 @@ const state = {
 };
 
 const MAX_NUMBER_OF_DIGITS = 12;
+const DECIMAL_PRECISION = 8;
+const SCIENTIFIC_NOTATION_PRECISION = 2;
+
 const screen = document.querySelector(".screen");
 const buttons = document.querySelector(".buttons");
 const operands = buttons.querySelectorAll(".operand");
@@ -110,10 +113,10 @@ function displayNumberOnScreen(e) {
 
 function displayResult(result) {
   // check if result is a decimal
-  if (result % 1 !== 0) result = parseFloat(result.toFixed(8));
+  if (result % 1 !== 0) result = parseFloat(result.toFixed(DECIMAL_PRECISION));
   // use scientific notation to handle large numbers
   if (String(result).length > MAX_NUMBER_OF_DIGITS)
-    result = result.toExponential(2);
+    result = result.toExponential(SCIENTIFIC_NOTATION_PRECISION);
   screen.textContent = result;
 }
 
